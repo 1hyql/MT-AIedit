@@ -77,7 +77,7 @@ mtPlugin {
     /**
      * 插件版本名称
      */
-    versionName = "v1.0.1"
+    versionName = "v1.0.2"
 
     /**
      * 插件名称
