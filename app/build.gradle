@@ -1,0 +1,103 @@
+plugins {
+    alias(libs.plugins.android.application)
+    // 如果要使用 Kotlin 就开启下面这行
+//    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.mt.plugin)
+}
+
+// 加快构建速度
+tasks.configureEach { task ->
+    if (task.name.contains("lint")) {
+        task.enabled = false
+    }
+}
+
+// 定义 Java 版本
+def javaVersion = JavaVersion.VERSION_17
+
+android {
+    // 固定这个就行，不需要改
+    namespace = 'bin.mt.plugin.pusher'
+    compileSdk = 36
+
+    defaultConfig {
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk = 28
+        minSdk = 21
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility javaVersion
+        targetCompatibility javaVersion
+    }
+
+    if (project.plugins.hasPlugin(libs.plugins.kotlin.android.get().pluginId)) {
+        kotlin.jvmToolchain(javaVersion.majorVersion.toInteger())
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring libs.desugar.jdk.libs
+    // 注意：OkHttp 3.12.13、bin.mt.json、androidx.annotation 等均由 SDK
+    //       (bin.mt.plugin:api:3.0.0) 以传递依赖自动提供，无需额外声明，
+    //       参考官方仓库 translator-deepseek 模块。
+}
+
+/**
+ * MT 插件配置
+ */
+mtPlugin {
+    /**
+     * 将 mtp 推送给哪个 MT 管理器：
+     * - 自动检测请填写：auto
+     * - 正式版请填写：bin.mt.plus
+     * - 测试版/共存请填写：bin.mt.plus.canary
+     */
+    pushTarget = "auto"
+
+    /**
+     * 插件ID，插件的唯一标识，类似于 packageName
+     * 只能由字母、数字、下划线和点组成
+     */
+    pluginID = "com.tec.aiedit"
+
+    /**
+     * 插件版本号，低版本插件无法覆盖安装高版本插件
+     */
+    versionCode = 2
+
+    /**
+     * 插件版本名称
+     */
+    versionName = "v1.0.1"
+
+    /**
+     * 插件名称
+     */
+    name = "{plugin_name}"
+
+    /**
+     * 插件描述
+     */
+    description = "{plugin_description}"
+
+    /**
+     * 主设置界面
+     */
+    mainPreference = "com.mtplugin.aieditor.settings.AiEditPreference"
+
+    /**
+     * 插件对外接口，接口类型会自动判断
+     */
+    interfaces = [
+            "com.mtplugin.aieditor.AiEditToolMenu",
+    ]
+}

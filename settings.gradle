@@ -1,0 +1,30 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+        // MT 插件 SDK 仓库
+        maven { url = 'https://maven.mt2.cn' }
+        mavenLocal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        // MT 插件 SDK 仓库
+        maven { url = 'https://maven.mt2.cn' }
+        mavenLocal()
+    }
+}
+
+rootProject.name = "MtAiEditor"
+include ':app'

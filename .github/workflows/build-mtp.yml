@@ -1,0 +1,46 @@
+# 云构建：把代码推到 GitHub 后自动编译出 .mtp 插件安装包
+# 用法：仓库 Actions 页签 → 手动运行 "Build MTP"，或 push 代码时自动触发
+# 产物：Actions → 本次运行 → Artifacts → mtai-editor-mtp.zip 下载
+
+name: Build MTP
+
+on:
+  push:                      # 任何 push（网页改文件/上传代码）都会自动构建
+    branches: [ main, master ]
+  workflow_dispatch:         # 也允许在网页上手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK 36 (fallback)
+        run: |
+          sdkmanager "platforms;android-36" "build-tools;36.0.0" || echo "AGP will auto-download"
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build MTP
+        run: ./gradlew app:packageReleaseMtp --no-daemon
+
+      - name: Upload MTP artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mtai-editor-mtp
+          path: app/build/outputs/mt-plugin/*.mtp
+          if-no-files-found: error
