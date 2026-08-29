@@ -1,0 +1,106 @@
+[size=5][b]【插件】AI文本编辑 v1.0.2 —— 在 MT 文本编辑器里调用任意 AI 接口，流式编辑文件[/b][/size]
+
+[quote]支持 OpenAI / DeepSeek / 通义千问 / Kimi / 智谱GLM / SiliconFlow / Ollama / Claude / Gemini / 自定义接口
+需要 MT 管理器 [b]2.26.3+[/b] 且 [b]VIP[/b]（插件系统 v3 要求）[/quote]
+
+[size=4][b]✨ 功能特性[/b][/size]
+[list]
+[*][b]编辑器内直达[/b]：文本编辑器顶部「编辑」菜单一键打开，无需切出应用
+[*][b]流式输出[/b]：AI 结果边生成边显示，可随时停止
+[*][b]三种作用范围[/b]：整个文件 / 选中文本 / 光标处插入
+[*][b]预览确认[/b]：应用前可反复查看/修改，点「应用」才写回文件并自动保存
+[*][b]任意 AI 接口[/b]：10 个服务商预设 + 「自定义」，协议全覆盖
+[*][b]智能清理[/b]：自动剥离 AI 输出首尾的代码块围栏
+[*][b]Key 本地保存[/b]：仅存本机，卸载即删
+[/list]
+
+[size=4][b]📥 安装[/b][/size]
+[list=1]
+[*]下载附件中的 [b].mtp[/b] 文件（或 GitHub Actions 产物）
+[*]传到手机 → MT 管理器 → 侧边栏 → [b]工具 → 插件管理[/b]
+[*]点右上角 [b]安装[/b] → 选择 .mtp → 完成
+[/list]
+
+[quote]插件 ID：com.tec.aiedit ｜ 版本：v1.0.2[/quote]
+
+[size=4][b]⚙️ 快速开始（三步）[/b][/size]
+[b]① 先配置 AI（必做）[/b]
+插件管理 → AI文本编辑 → 设置：
+[list]
+[*]服务商：选预设（如 DeepSeek）或「自定义」
+[*]API Key：填写密钥（Ollama 本地可留空）
+[*]默认模型：如 deepseek-chat（接口地址留空会自动用预设）
+[/list]
+
+[b]② 打开「AI 编辑」对话框[/b]
+打开任意文本文件 → 点编辑器[b]顶部的铅笔按钮[/b] → 在菜单里找「[b]AI 编辑[/b]」
+[color=#e74c3c]👉 找不到？先在「自定义」分组里把「AI 编辑」拖到常用（可用）位置即可[/color]
+
+**[b]③ 让 AI 编辑[/b]
+选作用范围 → 输入指令（如「给这段代码加注释」「翻译成英文」）→ 点「发送」→ 预览 → 点「应用」
+
+[color=#2ecc71][b]💡 省 token 小技巧[/b][/color]
+[size=3][list]
+[*]三种作用范围会把不同内容发给 AI：[b]整个文件[/b]（全文，最费 token）/ [b]选中文本[/b]（只发选中的片段，最省）/ [b]光标处插入[/b]（只发光标附近一小段）
+[*]大文件建议[b]先选中要改的部分[/b]，用「选中文本」模式，可显著节省上传 tokens
+[*]AI 返回的输出在预览框里是[b]可编辑[/b]的——应用前可以手动修改调整，再点「应用」写回
+[/list][/size]
+
+[size=4][b]🔌 支持的服务商[/b][/size]
+[table]
+[tr][td]服务商[/td][td]接口地址（可留空自动填）[/td][td]模型示例[/td][/tr]
+[tr][td]OpenAI[/td][td]api.openai.com/v1[/td][td]gpt-4o、gpt-4o-mini[/td][/tr]
+[tr][td]DeepSeek[/td][td]api.deepseek.com/v1[/td][td]deepseek-chat、deepseek-reasoner[/td][/tr]
+[tr][td]通义千问[/td][td]dashscope.aliyuncs.com/compatible-mode/v1[/td][td]qwen-plus、qwen-max[/td][/tr]
+[tr][td]Kimi/月之暗面[/td][td]api.moonshot.cn/v1[/td][td]moonshot-v1-32k[/td][/tr]
+[tr][td]智谱GLM[/td][td]open.bigmodel.cn/api/paas/v4[/td][td]glm-4-plus、glm-4-flash[/td][/tr]
+[tr][td]SiliconFlow[/td][td]api.siliconflow.cn/v1[/td][td]deepseek-ai/DeepSeek-V3[/td][/tr]
+[tr][td]Ollama（本地）[/td][td]http://局域网IP:11434/v1[/td][td]qwen2.5、llama3.1[/td][/tr]
+[tr][td]Claude[/td][td]api.anthropic.com/v1[/td][td]claude-3-7-sonnet-latest[/td][/tr]
+[tr][td]Gemini[/td][td]generativelanguage.googleapis.com/v1beta[/td][td]gemini-2.5-flash[/td][/tr]
+[tr][td]自定义[/td][td]任意 OpenAI 兼容网关/中转站[/td][td]手动填写[/td][/tr]
+[/table]
+
+[size=4][b]🖼️ 截图[/b][/size]
+（楼下补：设置界面 / 编辑器菜单 / AI 对话框流式输出 / 应用前后对比）
+
+[size=4][b]❓ 常见问题[/b][/size]
+[b]Q1：装了插件但编辑器菜单里找不到？[/b]
+进「工具 → 插件管理」确认已装「AI文本编辑」；再确认文件可写（只读会隐藏菜单）；最后在铅笔按钮的「自定义」里把「AI 编辑」拖出来。
+
+[b]Q2：发送后报 401 / 404？[/b]
+401 一般是 API Key 错误；404 一般是接口地址或模型名不对，对照上表检查。
+
+[b]Q3：为什么必须 VIP？[/b]
+MT 插件系统 v3 的官方要求（MT 2.26.3+ 且 VIP 才能安装/运行插件），与插件作者无关。
+
+[b]Q4：API Key 安全吗？[/b]
+只保存在本机插件专用存储里，卸载即删除；请求仅发给你在设置里填的接口地址。
+
+[b]Q5：怎么更换图标 / 自定义模型列表？[/b]
+开源地址提供完整工程与 GitHub Actions 云构建，改 ProviderRegistry.java 的模型列表、替换 resources/icon.png 后重新打包即可。
+
+[size=4][b]📣 社区[/b][/size]
+[list]
+[*]官网：[url=https://1hyql.github.io/termux]https://1hyql.github.io/termux[/url]
+[*]QQ 频道：termux2024
+[*]QQ 一群：369925819
+[*]QQ 二群：1034443023
+[/list]
+欢迎反馈 bug / 提需求 / 水群 🤝（群内回复更快）
+
+[size=4][b]📦 下载与更新记录[/b][/size]
+[hr]
+[b]v1.0.4[/b]：修复思考型模型（如 deepseek-reasoner）思考内容占满 max_tokens 导致输出为 0 的问题；默认 max_tokens 提升至 8192；模型思考时状态栏实时提示进度；输出被截断时给出明确提示。
+
+[b]v1.0.3[/b]：API Key 输入默认掩码显示，新增「查看已保存的 API Key」可点击查看明文/复制；新增 tokens 用量显示（可选开关，默认开启）；关于页标注作者。
+
+[b]v1.0.2[/b]：新增「关于/社区」入口（编辑器对话框 + 设置页）；应用/复制改为读取预览框修改后的内容（支持改完再应用）；流式输出光标/滚动跟随修正；使用说明补充（三种范围按需选、省 token 技巧）。
+
+[b]v1.0.1[/b]：插件更名为「AI文本编辑」；使用说明完善（先配置、铅笔按钮、自定义拖出）。
+
+[b]v1.0.0（首发）[/b]：编辑器内 AI 编辑（流式 / 三种范围 / 预览应用）；支持 OpenAI 兼容 + Claude + Gemini 协议；完整设置界面；中英文语言包。
+更新方式：直接安装新 .mtp 即可（版本号需高于已装版本）。
+
+[hr]
+[i]开源不易，好用的话帮忙点个赞/顶一下支持～[/i]

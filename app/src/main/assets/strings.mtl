@@ -1,0 +1,44 @@
+plugin_name: AI Text Editor
+plugin_description: Call any AI API from the text editor and let AI edit your files
+menu_ai_edit: AI Edit
+dialog_instruction_label: Instruction
+dialog_instruction_hint: What should the AI do? e.g. add comments, translate to English, fix bugs...
+dialog_scope_label: Scope
+dialog_scope_full: Whole File
+dialog_scope_selected: Selected Text
+dialog_scope_cursor: Insert at Cursor
+dialog_provider_label: Provider
+dialog_model_label: Model
+dialog_model_hint: model name
+dialog_settings_btn: Settings
+dialog_about_btn: About
+dialog_send_btn: Send
+dialog_stop_btn: Stop
+dialog_apply_btn: Apply
+dialog_copy_btn: Copy
+dialog_close_btn: Close
+dialog_result_label: AI Output Preview
+dialog_status_idle: Ready.
+dialog_status_sending: Requesting AI...
+dialog_status_done: Done (%d chars)
+dialog_status_stopped: Stopped (%d chars)
+dialog_status_err: Error: %s
+dialog_status_no_instruction: Please enter an instruction first.
+dialog_status_no_model: Please fill in the model name.
+dialog_status_no_key: No API Key configured. Open Settings first.
+dialog_status_no_result: No AI output yet.
+dialog_status_saved: Applied and saved.
+dialog_status_need_selection: No text selected. Choose "Whole File" or "Insert at Cursor".
+about_tagline: Edit files with any AI API inside MT text editor
+about_community: Community & Support
+about_website: Community Website
+about_qq_channel: QQ Channel
+about_group1: QQ Group 1
+about_group2: QQ Group 2
+about_copy: Copied
+about_author: Author
+dialog_tokens_usage: Tokens - in %1$d / out %2$d
+dialog_status_thinking: Thinking... (%1$d chars)
+dialog_status_only_thinking: The model only returned thinking content. Increase max_tokens or use a non-thinking model
+dialog_status_uploading_full: Uploading full text (%1$d chars), waiting for AI...
+dialog_status_file_too_large: File ~%1$d chars, too large (limit 100k). Select a part and use "Selected Text" mode

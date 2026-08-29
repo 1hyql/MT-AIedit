@@ -1,0 +1,44 @@
+plugin_name: AI文本编辑
+plugin_description: 在 MT 文本编辑器中调用任意常见 AI 接口，让 AI 帮你编辑文件
+menu_ai_edit: AI 编辑
+dialog_instruction_label: 操作指令
+dialog_instruction_hint: 让 AI 做什么？例如：给这段代码加注释 / 翻译成英文 / 修复 bug...
+dialog_scope_label: 作用范围
+dialog_scope_full: 整个文件
+dialog_scope_selected: 选中文本
+dialog_scope_cursor: 光标处插入
+dialog_provider_label: 服务商
+dialog_model_label: 模型
+dialog_model_hint: 模型名
+dialog_settings_btn: 设置
+dialog_about_btn: 关于
+dialog_send_btn: 发送
+dialog_stop_btn: 停止
+dialog_apply_btn: 应用
+dialog_copy_btn: 复制
+dialog_close_btn: 关闭
+dialog_result_label: AI 输出预览
+dialog_status_idle: 就绪。
+dialog_status_sending: 正在请求 AI...
+dialog_status_done: 生成完成（%d 字符）
+dialog_status_stopped: 已停止（%d 字符）
+dialog_status_err: 错误：%s
+dialog_status_no_instruction: 请先输入操作指令。
+dialog_status_no_model: 请填写模型名。
+dialog_status_no_key: 未填写 API Key，请先到设置里配置。
+dialog_status_no_result: AI 还没有输出内容。
+dialog_status_saved: 已应用并保存。
+dialog_status_need_selection: 未选中文本，请选择"整个文件"或"光标处插入"。
+about_tagline: 在 MT 文本编辑器中调用任意 AI 接口编辑文件
+about_community: 社区与支持
+about_website: 社区官网
+about_qq_channel: QQ频道
+about_group1: QQ一群
+about_group2: QQ二群
+about_copy: 已复制
+about_author: 作者
+dialog_tokens_usage: tokens 用量：输入 %1$d · 输出 %2$d
+dialog_status_thinking: 思考中…（已 %1$d 字符）
+dialog_status_only_thinking: 模型只返回了思考内容，未生成输出。可调大 max_tokens 或换用非思考模型
+dialog_status_uploading_full: 正在上传全文（%1$d 字符）并等待 AI…
+dialog_status_file_too_large: 文件约 %1$d 字符，过大（上限 10 万字符）。建议先选中要修改的部分，用「选中文本」模式
