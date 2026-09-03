@@ -1,0 +1,63 @@
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.mt.plugin)
+}
+
+// 加快构建速度
+tasks.configureEach { task ->
+    if (task.name.contains("lint")) {
+        task.enabled = false
+    }
+}
+
+// 定义 Java 版本
+def javaVersion = JavaVersion.VERSION_17
+
+android {
+    namespace = 'bin.mt.plugin.pusher'
+    compileSdk = 36
+
+    defaultConfig {
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk = 28
+        minSdk = 21
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled = true
+        sourceCompatibility javaVersion
+        targetCompatibility javaVersion
+    }
+
+    if (project.plugins.hasPlugin(libs.plugins.kotlin.android.get().pluginId)) {
+        kotlin.jvmToolchain(javaVersion.majorVersion.toInteger())
+    }
+}
+
+dependencies {
+    coreLibraryDesugaring libs.desugar.jdk.libs
+    // OkHttp、bin.mt.json、androidx.annotation 由 SDK 传递依赖提供，无需额外声明
+}
+
+/**
+ * MT 插件配置
+ */
+mtPlugin {
+    pushTarget = "auto"
+    pluginID = "com.tec.aiedit"
+    versionCode = 23
+    versionName = "v1.3.9"
+    name = "{plugin_name}"
+    description = "{plugin_description}"
+    mainPreference = "com.mtplugin.aieditor.settings.AiEditPreference"
+    interfaces = [
+            "com.mtplugin.aieditor.AiEditToolMenu",
+    ]
+}
