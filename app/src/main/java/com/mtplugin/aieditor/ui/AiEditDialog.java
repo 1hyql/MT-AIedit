@@ -219,6 +219,19 @@ public final class AiEditDialog {
         final Runnable refreshEditingState = () ->
                 editingAllowed[0] = Prefs.MODE_ACT.equals(mode[0]) && !streaming[0];
 
+        // 统一刷新「应用 / 复制」按钮状态：onFinished / onError / 停止 三处共用，避免状态遗漏
+        final Runnable refreshActionButtons = () -> {
+            boolean hasText = resultText.length() > 0;
+            boolean actReady = hasText && !streaming[0] && Prefs.MODE_ACT.equals(mode[0]);
+            applyBtn.setEnabled(actReady);
+            // Act 输出结束后「应用」高亮为绿色
+            applyBtn.setTextColor(actReady ? 0xFF4CAF50 : 0xFF808080);
+            copyBtn.setEnabled(hasText);
+        };
+
+        // 当前请求对应的客户端：停止/关闭时用于真正中断底层网络请求
+        final AiClient[] currentClient = new AiClient[1];
+
         // 拦截非法编辑：Plan 模式 / Act 输出未完成时，用户改输出框会被还原并提示
         resultBox.addTextChangedListener(new PluginEditTextWatcher.Simple() {
             @Override
@@ -266,7 +279,7 @@ public final class AiEditDialog {
             final String baseUrl = cfg[2].trim().isEmpty() && provider != null
                     ? provider.defaultBaseUrl : cfg[2].trim();
             final String protocol = "custom".equals(providerId)
-                    ? Prefs.getString(prefs, Prefs.KEY_PROTOCOL, ProviderRegistry.Protocol.OPENAI)
+                    ? readProtocol(prefs, profileId(profileSel[0]))
                     : provider.protocol;
 
             if (baseUrl.isEmpty()) {
@@ -324,6 +337,7 @@ public final class AiEditDialog {
             // 创建客户端（按协议选择实现）
             final AiClient client = AiClient.Factory.create(
                     protocol, baseUrl, apiKey, modelText, temperature, maxTokens, timeoutSec);
+            currentClient[0] = client;
 
             // 界面状态
             cancelled.set(false);
@@ -432,12 +446,7 @@ public final class AiEditDialog {
                             }
                             streaming[0] = false;
                             refreshEditingState.run();
-                            boolean hasText = resultText.length() > 0;
-                            boolean actReady = hasText && Prefs.MODE_ACT.equals(mode[0]);
-                            applyBtn.setEnabled(actReady);
-                            // Act 输出结束后「应用」高亮为绿色
-                            applyBtn.setTextColor(actReady ? 0xFF4CAF50 : 0xFF808080);
-                            copyBtn.setEnabled(hasText);
+                            refreshActionButtons.run();
                             sendBtn.setEnabled(true);
                             stopBtn.setEnabled(false);
                         });
@@ -450,7 +459,9 @@ public final class AiEditDialog {
                             refreshEditingState.run();
                             sendBtn.setEnabled(true);
                             stopBtn.setEnabled(false);
+                            // 出错时不允许「应用」（输出可能不完整），但仍可复制已有内容
                             applyBtn.setEnabled(false);
+                            applyBtn.setTextColor(0xFF808080);
                             copyBtn.setEnabled(resultText.length() > 0);
                             status.setText(context.getString("dialog_status_err", message));
                         });
@@ -463,8 +474,15 @@ public final class AiEditDialog {
         // ---------- 停止（内容保留） ----------
         stopBtn.setOnClickListener(v -> {
             cancelled.set(true);
+            // 真正中断底层网络请求（而非仅等待标志位，避免慢响应时阻塞到超时）
+            AiClient c = currentClient[0];
+            if (c != null) {
+                c.cancel();
+            }
             streaming[0] = false;
             refreshEditingState.run();
+            // 停止后保留已生成内容：允许复制 / （Act 模式下）应用半截输出
+            refreshActionButtons.run();
             sendBtn.setEnabled(true);
             stopBtn.setEnabled(false);
         });
@@ -575,11 +593,23 @@ public final class AiEditDialog {
         });
 
         // ---------- 关闭 ----------
-        closeBtn.setOnClickListener(v -> dialog.dismiss());
+        closeBtn.setOnClickListener(v -> {
+            // 关闭即中断进行中的请求，避免后台线程回调已销毁的对话框控件
+            cancelled.set(true);
+            AiClient c = currentClient[0];
+            if (c != null) {
+                c.cancel();
+            }
+            dialog.dismiss();
+        });
 
         // ---------- 配置入口（模型/方案弹窗） ----------
         configBtn.setOnClickListener(v -> {
             cancelled.set(true);
+            AiClient c = currentClient[0];
+            if (c != null) {
+                c.cancel();
+            }
             showConfigDialog(pluginUI, context, prefs, dialog, () -> {
                 // 配置保存后：刷新主界面当前方案与模型
                 String active = Prefs.getString(prefs, Prefs.KEY_ACTIVE_PROFILE, "p1");
@@ -756,6 +786,12 @@ public final class AiEditDialog {
                 Prefs.getString(prefs, prefix + "base_url", ""),
                 Prefs.getString(prefs, prefix + "model", "")
         };
+    }
+
+    /** 读取方案对应的接口协议（p1 复用旧全局 key；p2/p3 使用各自前缀 key） */
+    private static String readProtocol(SharedPreferences prefs, String profile) {
+        return Prefs.getString(prefs, profileKeyPrefix(profile) + "protocol",
+                ProviderRegistry.Protocol.OPENAI);
     }
 
     /* ---------- 提示词构造 ---------- */

@@ -77,6 +77,13 @@ public interface AiClient {
               @NonNull AtomicBoolean cancelled);
 
     /**
+     * 取消当前正在进行的请求（若存在）。
+     * 底层连接立即中断，阻塞中的读线程会尽快返回。
+     * 调用方通常先置位 {@code cancelled} 再调用本方法，避免回调竞态。
+     */
+    void cancel();
+
+    /**
      * 客户端工厂：根据协议类型创建对应客户端。
      */
     class Factory {

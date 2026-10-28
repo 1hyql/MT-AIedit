@@ -46,12 +46,7 @@ public class AiEditPreference implements PluginPreference {
         // ===== 方案 1 =====
         builder.addHeader("方案 1 · 连接");
         addProviderList(builder, "服务商", Prefs.KEY_PROVIDER);
-        builder.addList("接口协议（自定义服务商时生效）", Prefs.KEY_PROTOCOL)
-                .defaultValue("openai")
-                .summary("OpenAI 兼容可覆盖 OpenAI/DeepSeek/通义/Kimi/GLM/SiliconFlow/Ollama 及任意中转站")
-                .addItem("OpenAI 兼容（/chat/completions）", "openai")
-                .addItem("Anthropic Claude（/messages）", "claude")
-                .addItem("Google Gemini（streamGenerateContent）", "gemini");
+        addProtocolList(builder, Prefs.KEY_PROTOCOL);
         builder.addInput("API Key", Prefs.KEY_API_KEY)
                 .hint("sk-...（Ollama 本地可留空）")
                 .summary("***********")
@@ -71,6 +66,7 @@ public class AiEditPreference implements PluginPreference {
         // ===== 方案 2 =====
         builder.addHeader("方案 2 · 连接");
         addProviderList(builder, "服务商", "p2_provider");
+        addProtocolList(builder, "p2_protocol");
         builder.addInput("API Key", "p2_api_key")
                 .hint("sk-...（Ollama 本地可留空）")
                 .summary("***********")
@@ -85,6 +81,7 @@ public class AiEditPreference implements PluginPreference {
         // ===== 方案 3 =====
         builder.addHeader("方案 3 · 连接");
         addProviderList(builder, "服务商", "p3_provider");
+        addProtocolList(builder, "p3_protocol");
         builder.addInput("API Key", "p3_api_key")
                 .hint("sk-...（Ollama 本地可留空）")
                 .summary("***********")
@@ -182,6 +179,16 @@ public class AiEditPreference implements PluginPreference {
                 .addItem(presetId("claude"), "claude")
                 .addItem(presetId("gemini"), "gemini")
                 .addItem(presetId("custom"), "custom");
+    }
+
+    /** 接口协议下拉（方案共用）：自定义服务商时生效，决定走哪种协议 */
+    private void addProtocolList(Builder builder, String key) {
+        builder.addList("接口协议（自定义服务商时生效）", key)
+                .defaultValue("openai")
+                .summary("OpenAI 兼容可覆盖 OpenAI/DeepSeek/通义/Kimi/GLM/SiliconFlow/Ollama 及任意中转站")
+                .addItem("OpenAI 兼容（/chat/completions）", "openai")
+                .addItem("Anthropic Claude（/messages）", "claude")
+                .addItem("Google Gemini（streamGenerateContent）", "gemini");
     }
 
     /** 点击应用系统提示词预设 */

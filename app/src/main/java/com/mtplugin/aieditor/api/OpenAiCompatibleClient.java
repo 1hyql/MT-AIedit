@@ -10,6 +10,7 @@ import com.mtplugin.aieditor.ChatMessage;
 
 import bin.mt.json.JSONArray;
 import bin.mt.json.JSONObject;
+import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -35,6 +36,9 @@ public final class OpenAiCompatibleClient implements AiClient {
     private final float temperature;
     private final int maxTokens;
     private final int timeoutSec;
+
+    /** 当前进行中的请求（用于 cancel() 中断底层连接） */
+    private volatile Call currentCall;
 
     public OpenAiCompatibleClient(String baseUrl, String apiKey, String model,
                                   float temperature, int maxTokens, int timeoutSec) {
@@ -73,7 +77,9 @@ public final class OpenAiCompatibleClient implements AiClient {
             }
 
             OkHttpClient client = ApiUtils.buildClient(timeoutSec);
-            try (Response response = client.newCall(rb.build()).execute()) {
+            Call call = client.newCall(rb.build());
+            currentCall = call;
+            try (Response response = call.execute()) {
                 if (!response.isSuccessful()) {
                     String err = ApiUtils.extractError(ApiUtils.readErrorBody(response));
                     callback.onError("HTTP " + response.code() + (err.isEmpty() ? "" : "：" + err));
@@ -84,12 +90,22 @@ public final class OpenAiCompatibleClient implements AiClient {
                     return;
                 }
                 parseBody(response, callback, cancelled);
+            } finally {
+                currentCall = null;
             }
         } catch (Throwable t) {
             if (cancelled.get()) {
                 return;
             }
             callback.onError(t.getClass().getSimpleName() + ": " + t.getMessage());
+        }
+    }
+
+    @Override
+    public void cancel() {
+        Call c = currentCall;
+        if (c != null) {
+            c.cancel();
         }
     }
 
